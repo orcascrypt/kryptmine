@@ -66,8 +66,7 @@
             gasLimit: 200000n
           });
 
-          log.textContent += `TX ${i + 1} Hash: ${tx.hash}\n`;
-          log.textContent += `✅ TX ${i + 1} sent (confirmation skipped due to OKX bug).
+          log.textContent += `✅ TX ${i + 1} sent.\n`;
 `;
         } catch (err) {
           log.textContent += `❌ TX ${i + 1} failed: ${err.message}\n`;

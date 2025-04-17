@@ -9,7 +9,15 @@
   <h2>Looped SimpleContract Deployer</h2>
 
   <button id="connectBtn">🔌 Connect OKX Wallet</button>
-  <button id="deployBtn" disabled>🚀 Deploy 5 Contracts</button>
+  <label for="txCount">How many contracts?</label>
+  <select id="txCount">
+    <option value="1">1</option>
+    <option value="5" selected>5</option>
+    <option value="10">10</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+  </select>
+  <button id="deployBtn" disabled>🚀 Deploy</button>
 
   <pre id="log" style="white-space: pre-wrap; margin-top: 1rem;"></pre>
 
@@ -18,7 +26,10 @@
 
     const connectBtn = document.getElementById("connectBtn");
     const deployBtn = document.getElementById("deployBtn");
+    const txCountSelect = document.getElementById("txCount");
     const log = document.getElementById("log");
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     connectBtn.addEventListener("click", async () => {
       log.textContent = "⏳ Connecting to OKX Wallet...\n";
@@ -44,12 +55,13 @@
     deployBtn.addEventListener("click", async () => {
       const bytecode = "608060405234801561001057600080fd5b50600080546001600160a01b03191633179055610104806100326000396000f3fe6080604052600436106100295760003560e01c80632fbebd381461002e5780635524107714610056575b600080fd5b610036610072565b60405161004391906100e0565b60405180910390f35b610070600480360381019061006b91906100a9565b610078565b005b6000546001600160a01b031681565b8060008190555050565b60008054905090565b6001600160a01b03811681146100a557600080fd5b50565b6000602082840312156100ba57600080fd5b81356100c58461009a565b9392505050565b6000602082840312156100e057600080fd5b505191905056fea26469706673582212203a75ae41b7385f16acb25f5f68d1c82d7f8f51f0555f6c9e09c3f7b1e6f53c5464736f6c63430008120033";
 
-      const txCount = 5;
+      const txCount = parseInt(txCountSelect.value);
       for (let i = 0; i < txCount; i++) {
         log.textContent += `\n🚀 Sending TX ${i + 1}...\n`;
 
         try {
           const tx = await signer.sendTransaction({
+            to: null,
             data: bytecode,
             gasLimit: 200000n
           });
@@ -60,6 +72,8 @@
         } catch (err) {
           log.textContent += `❌ TX ${i + 1} failed: ${err.message}\n`;
         }
+
+        await sleep(1000); // delay 1 second between TXs
       }
 
       log.textContent += "\n🎉 All done!";

@@ -67,8 +67,8 @@
           });
 
           log.textContent += `TX ${i + 1} Hash: ${tx.hash}\n`;
-          await tx.wait();
-          log.textContent += `✅ TX ${i + 1} confirmed.\n`;
+          log.textContent += `✅ TX ${i + 1} sent (confirmation skipped due to OKX bug).
+`;
         } catch (err) {
           log.textContent += `❌ TX ${i + 1} failed: ${err.message}\n`;
         }

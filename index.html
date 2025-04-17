@@ -3,51 +3,44 @@
 <head>
   <title>Looped SimpleContract Deployer</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@okxweb3/coin-web3-connect@1.0.5/dist/index.umd.js"></script> ✅
 </head>
 <body style="font-family: Arial; padding: 2rem;">
   <h2>Looped SimpleContract Deployer</h2>
 
-  <!-- Connect wallet button -->
-  <button id="connectBtn" onclick="connectWallet()">🔌 Connect OKX Wallet</button>
+  <button id="connectBtn">🔌 Connect OKX Wallet</button>
+  <button id="deployBtn" disabled>🚀 Deploy 5 Contracts</button>
 
-  <!-- Deploy contracts button (disabled by default) -->
-  <button id="deployBtn" onclick="deployMultiple()" disabled>🚀 Deploy 5 Contracts</button>
-
-  <!-- Log output -->
   <pre id="log" style="white-space: pre-wrap; margin-top: 1rem;"></pre>
 
-  <script>
+  <script type="module">
+    import { CoinWeb3Connect } from 'https://cdn.jsdelivr.net/npm/@okxweb3/coin-web3-connect@1.0.5/+esm';
+
     let signer;
 
-    async function connectWallet() {
-      const log = document.getElementById("log");
+    const connectBtn = document.getElementById("connectBtn");
+    const deployBtn = document.getElementById("deployBtn");
+    const log = document.getElementById("log");
+
+    connectBtn.addEventListener("click", async () => {
       log.textContent = "⏳ Connecting to OKX Wallet...\n";
 
       try {
-        if (!window.CoinWeb3Connect) {
-          throw new Error("OKX SDK not loaded. Check your script source.");
-        }
-
-        const provider = await window.CoinWeb3Connect.connect({
+        const provider = await CoinWeb3Connect.connect({
           providerType: 'okxwallet',
-          chainId: '0x27da' // Chain ID 10218 in hex
+          chainId: '0x27da'
         });
 
         const ethersProvider = new ethers.BrowserProvider(provider);
         signer = await ethersProvider.getSigner();
 
         log.textContent += "✅ OKX Wallet connected!\n";
-        document.getElementById("deployBtn").disabled = false;
+        deployBtn.disabled = false;
       } catch (err) {
         log.textContent += `❌ Connection failed: ${err.message}\n`;
       }
-    }
+    });
 
-    async function deployMultiple() {
-      const log = document.getElementById("log");
-
-      // SimpleContract bytecode
+    deployBtn.addEventListener("click", async () => {
       const bytecode = "608060405234801561001057600080fd5b50600080546001600160a01b03191633179055610104806100326000396000f3fe6080604052600436106100295760003560e01c80632fbebd381461002e5780635524107714610056575b600080fd5b610036610072565b60405161004391906100e0565b60405180910390f35b610070600480360381019061006b91906100a9565b610078565b005b6000546001600160a01b031681565b8060008190555050565b60008054905090565b6001600160a01b03811681146100a557600080fd5b50565b6000602082840312156100ba57600080fd5b81356100c58461009a565b9392505050565b6000602082840312156100e057600080fd5b505191905056fea26469706673582212203a75ae41b7385f16acb25f5f68d1c82d7f8f51f0555f6c9e09c3f7b1e6f53c5464736f6c63430008120033";
 
       const txCount = 5;
@@ -69,7 +62,7 @@
       }
 
       log.textContent += "\n🎉 All done!";
-    }
+    });
   </script>
 </body>
 </html>

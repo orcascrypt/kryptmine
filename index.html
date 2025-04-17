@@ -3,6 +3,7 @@
 <head>
   <title>Looped SimpleContract Deployer</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@okxweb3/coin-web3-connect@1.0.5/dist/index.umd.js"></script>
 </head>
 <body style="font-family: Arial; padding: 2rem;">
   <h2>Looped SimpleContract Deployer</h2>
@@ -12,9 +13,7 @@
 
   <pre id="log" style="white-space: pre-wrap; margin-top: 1rem;"></pre>
 
-  <script type="module">
-    import { CoinWeb3Connect } from "https://cdn.skypack.dev/@okxweb3/coin-web3-connect";
-
+  <script>
     let signer;
 
     const connectBtn = document.getElementById("connectBtn");
@@ -25,7 +24,9 @@
       log.textContent = "⏳ Connecting to OKX Wallet...\n";
 
       try {
-        const provider = await CoinWeb3Connect.connect({
+        if (!window.CoinWeb3Connect) throw new Error("CoinWeb3Connect not available");
+
+        const provider = await window.CoinWeb3Connect.connect({
           providerType: 'okxwallet',
           chainId: '0x27da'
         });
